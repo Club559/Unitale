@@ -20,6 +20,10 @@ public class ArenaSizer : MonoBehaviour
     private RectTransform inner; // RectTransform of the inner part of the arena.
     private int pxPerSecond = 100 * 10; // How many pixels per second the arena should resize
 
+    private RectTransform mask;
+    private RectTransform layer;
+    private Vector3 layerPos;
+
     private float currentX; // Current width of the arena as it is resizing
     private float currentY; // Current height of the arena as it is resizing
     internal float newX; // Desired width of the arena; internal so the Lua Arena object may refer to it (lazy)
@@ -36,6 +40,9 @@ public class ArenaSizer : MonoBehaviour
 
         outer = GameObject.Find("arena_border_outer").GetComponent<RectTransform>();
         inner = GameObject.Find("arena").GetComponent<RectTransform>();
+        mask = GameObject.Find("arena_mask").GetComponent<RectTransform>();
+        layer = GameObject.Find("InsideArenaLayer").GetComponent<RectTransform>();
+        layerPos = layer.transform.position;
         newX = currentX;
         newY = currentY;
         instance = this;
@@ -135,6 +142,7 @@ public class ArenaSizer : MonoBehaviour
         }
 
         applyResize(currentX, currentY);
+        layer.transform.position = layerPos;
     }
 
     /// <summary>
@@ -146,6 +154,7 @@ public class ArenaSizer : MonoBehaviour
     {
         inner.sizeDelta = new Vector2(arenaX, arenaY);
         outer.sizeDelta = new Vector2(arenaX + 10, arenaY + 10);
+        mask.sizeDelta = inner.sizeDelta;
         arenaAbs.x = inner.position.x - inner.rect.width / 2;
         arenaAbs.y = inner.position.y - inner.rect.height / 2;
         arenaAbs.width = inner.rect.width;

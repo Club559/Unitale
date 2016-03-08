@@ -46,10 +46,9 @@ public class EnemyEncounter : MonoBehaviour
         return enabledEnemies[randomEnemy].Comments[randomComment];
     }
 
-    public virtual void HandleItem(UnderItem item)
+    public virtual void HandleItem(string item)
     {
-        if (!CustomItemHandler(item))
-            item.inCombatUse();
+        CustomItemHandler(item);
     }
 
     public virtual void HandleSpare()
@@ -72,7 +71,7 @@ public class EnemyEncounter : MonoBehaviour
     // </summary>
     // <param name="item">Item to be checked for custom action</param>
     // <returns>true if a custom action should be executed for given item, false if the default action should happen</returns>
-    protected virtual bool CustomItemHandler(UnderItem item)
+    protected virtual bool CustomItemHandler(string item)
     {
         return true;
         // the following was test code that allowed you to activate dogs in order 2-3-1 to replace all bullets with dogs

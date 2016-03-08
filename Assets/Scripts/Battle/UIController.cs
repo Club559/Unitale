@@ -206,6 +206,7 @@ public class UIController : MonoBehaviour
             case UIState.ITEMMENU:
                 string[] items = getInventoryPage(0);
                 selectedItem = 0;
+                encounter.script.SetVar("selectedItem", DynValue.NewNumber(selectedItem + 1));
                 setPlayerOnSelection(0);
                 textmgr.setText(new SelectMessage(items, false));
                 /*ActionDialogResult(new TextMessage[] {
@@ -466,10 +467,11 @@ public class UIController : MonoBehaviour
 
     private string[] getInventoryPage(int page)
     {
+        Table fullItems = encounter.script.GetVar("items").Table;
         int invCount = 0;
         for (int i = page * 4; i < page * 4 + 4; i++)
         {
-            if (Inventory.container.Count <= i)
+            if (fullItems.Length <= i)
                 break;
 
             invCount++;
@@ -481,7 +483,7 @@ public class UIController : MonoBehaviour
         string[] items = new string[6];
         for (int i = 0; i < invCount; i++)
         {
-            items[i] = Inventory.container[i + page * 4].ShortName;
+            items[i] = fullItems.Get((i + page * 4) + 1).String;
         }
         items[5] = "PAGE " + (page + 1);
         return items;
@@ -529,7 +531,7 @@ public class UIController : MonoBehaviour
                         break;
 
                     case Actions.ITEM:
-                        if (Inventory.container.Count == 0)
+                        if (encounter.script.GetVar("items") != DynValue.Nil || encounter.script.GetVar("items").Table.Length == 0)
                             return; // prevent sound playback
                         SwitchState(UIState.ITEMMENU);
                         break;
@@ -563,7 +565,8 @@ public class UIController : MonoBehaviour
                 break;
 
             case UIState.ITEMMENU:
-                encounter.HandleItem(Inventory.container[selectedItem]);
+                Table items = encounter.script.GetVar("items").Table;
+                encounter.HandleItem(items.Get(selectedItem + 1).String);
                 playSound(sndConfirm);
                 break;
 
@@ -779,18 +782,20 @@ public class UIController : MonoBehaviour
 
                 // Debug.Log("Unchecked desired item " + desiredItem);
 
+                Table items = encounter.script.GetVar("items").Table;
                 if (desiredItem < 0)
                 {
-                    desiredItem = Math.mod(desiredItem, 4) + (Inventory.container.Count / 4) * 4;
+                    desiredItem = Math.mod(desiredItem, 4) + (items.Length / 4) * 4;
                 }
-                else if (desiredItem > Inventory.container.Count)
+                else if (desiredItem > items.Length)
                 {
                     desiredItem = Math.mod(desiredItem, 4);
                 }
 
-                if (desiredItem != selectedItem && desiredItem < Inventory.container.Count) // 0 check not needed, done before
+                if (desiredItem != selectedItem && desiredItem < items.Length) // 0 check not needed, done before
                 {
                     selectedItem = desiredItem;
+                    encounter.script.SetVar("selectedItem", DynValue.NewNumber(selectedItem + 1));
                     setPlayerOnSelection(Math.mod(selectedItem, 4));
                     int page = selectedItem / 4;
                     textmgr.setText(new SelectMessage(getInventoryPage(page), false));
