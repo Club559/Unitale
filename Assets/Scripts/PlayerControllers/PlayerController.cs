@@ -153,8 +153,8 @@ public class PlayerController : MonoBehaviour
         {
             HP = 0;
             invulTimer = 0;
-            GameObject.DontDestroyOnLoad(this.gameObject);
             this.gameObject.transform.SetParent(null);
+            GameObject.DontDestroyOnLoad(this.gameObject);
             this.setControlOverride(true);
             gameObject.AddComponent<GameOverBehavior>();
         }

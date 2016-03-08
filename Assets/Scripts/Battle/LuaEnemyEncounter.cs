@@ -204,10 +204,9 @@ internal class LuaEnemyEncounter : EnemyEncounter
         musicSource.Play(); // play that funky music
     }
 
-    public override void HandleItem(UnderItem item)
+    public override void HandleItem(string item)
     {
-        if (!CustomItemHandler(item))
-            item.inCombatUse();
+        CustomItemHandler(item);
     }
 
     public bool CallOnSelfOrChildren(string func, DynValue[] param = null)
@@ -283,9 +282,9 @@ internal class LuaEnemyEncounter : EnemyEncounter
     // /</summary>
     // /<param name="item">Item to be checked for custom action</param>
     // /<returns>true if a custom action should be executed for given item, false if the default action should happen</returns>
-    protected virtual bool CustomItemHandler(UnderItem item)
+    protected virtual bool CustomItemHandler(string item)
     {
-        return CallOnSelfOrChildren("HandleItem", new DynValue[] { DynValue.NewString(item.ID) });
+        return CallOnSelfOrChildren("HandleItem", new DynValue[] { DynValue.NewString(item.ToUpper()) });
     }
 
     public override void updateWave()

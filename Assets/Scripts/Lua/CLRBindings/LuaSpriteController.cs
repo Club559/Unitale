@@ -164,6 +164,18 @@ public class LuaSpriteController {
         img.transform.SetParent(parent.img.transform);
     }
 
+    public void SetLayer(int layer)
+    {
+        switch(layer)
+        {
+            case 0: img.transform.SetParent(GameObject.Find("BelowUILayer").transform, true); break;
+            case 1: img.transform.SetParent(GameObject.Find("BelowArenaLayer").transform, true); break;
+            case 2: img.transform.SetParent(GameObject.Find("InsideArenaLayer").transform, true); break;
+            case 3: img.transform.SetParent(GameObject.Find("BulletPool").transform, true); break;
+            default: throw new MoonSharp.Interpreter.ScriptRuntimeException("Sprite layer " + layer + " doesn't exist.");
+        }
+    }
+
     public void SetPivot(float x, float y)
     {
         img.rectTransform.pivot = new Vector2(x, y);
