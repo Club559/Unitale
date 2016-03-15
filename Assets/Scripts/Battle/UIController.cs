@@ -531,7 +531,7 @@ public class UIController : MonoBehaviour
                         break;
 
                     case Actions.ITEM:
-                        if (encounter.script.GetVar("items") != DynValue.Nil || encounter.script.GetVar("items").Table.Length == 0)
+                        if (encounter.script.GetVar("items") == DynValue.Nil || encounter.script.GetVar("items").Table.Length == 0)
                             return; // prevent sound playback
                         SwitchState(UIState.ITEMMENU);
                         break;
